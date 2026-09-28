@@ -74,9 +74,10 @@ The **final goal** is to display a **bar chart** that depicts how many countries
 
 ```{r}
 #| echo: TRUE
-countries <- read.table("Data/Raw/02_countries.txt", header = TRUE)
+countries <- read.table("C:/Users/patie/OneDrive - University of Toronto/COURSES/FALL/2026/CHL5233 - Stats Programming/armed_conflict/Data/Raw/02_countries.txt", header = TRUE)
 nrow(countries)
 ncol(countries)
+
 ```
 *There are 186 countries included*
 
@@ -84,7 +85,7 @@ ncol(countries)
 
 ```{r}
 #| echo: TRUE
-regions <- read.table("Data/Raw/02_regions.txt", header = TRUE)
+regions <- read.table("C:/Users/patie/OneDrive - University of Toronto/COURSES/FALL/2026/CHL5233 - Stats Programming/armed_conflict/Data/Raw/02_regions.txt", header = TRUE)
 nrow(regions)
 ncol(regions)
 ```
