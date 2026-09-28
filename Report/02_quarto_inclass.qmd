@@ -1,6 +1,6 @@
 ---
 title: "CHL5233: Quarto in-class assignment"
-author: "PUT YOUR NAME HERE"
+author: "Patience Fakembe"
 format: 
   pdf:
     geometry:
