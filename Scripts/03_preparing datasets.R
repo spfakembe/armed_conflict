@@ -89,5 +89,7 @@ mortality_dt <- list(conflict_dt, nestdisaster, infantmort_lg, matmort_lg,
   reduce(left_join, by = c("iso", "year")) |>
   mutate(year=as.integer(year))
 
-write.csv(mortality_dt, "./Report/mortality_data.csv", row.names = FALSE)
+write.csv(mortality_dt, "./Data/Processed/mortality_data.csv", row.names = FALSE)
+
+
 
