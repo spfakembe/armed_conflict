@@ -60,8 +60,8 @@ nestdisaster <- nestdisaster |> group_by(iso, year) |>
     .groups = "drop"
   ) |>
   mutate(
-    drought = is.integer(if_else(n1>0, 1, 0)),
-    earthquake= is.integer(if_else(n2>0, 1, 0))
+    drought = as.integer(if_else(n1>0, 1, 0)),
+    earthquake= as.integer(if_else(n2>0, 1, 0))
 ) |> select(year, iso, earthquake, drought)
 
 
