@@ -92,4 +92,6 @@ mortality_dt <- list(conflict_dt, nestdisaster, infantmort_lg, matmort_lg,
 write.csv(mortality_dt, "./Data/Processed/mortality_data.csv", row.names = FALSE)
 
 
+## COMPARING DATA WITH CODING AGENT
+# 
 
