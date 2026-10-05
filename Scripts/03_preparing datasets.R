@@ -4,10 +4,10 @@ library(purrr)
 
 
 # Read all mortality datasets
-matmort <- read.csv("C:/Users/patie/OneDrive - University of Toronto./COURSES/FALL/2026/CHL5233 - Stats Programming/armed_conflict/Data/Raw/raw/raw/maternal_mortality.csv", header = TRUE)
-infantmort <- read.csv("C:/Users/patie/OneDrive - University of Toronto./COURSES/FALL/2026/CHL5233 - Stats Programming/armed_conflict/Data/Raw/raw/raw/infant_mortality.csv", header = TRUE)
-neonmort <- read.csv("C:/Users/patie/OneDrive - University of Toronto./COURSES/FALL/2026/CHL5233 - Stats Programming/armed_conflict/Data/Raw/raw/raw/neonatal_mortality.csv", header = TRUE)
-under5mort <- read.csv("C:/Users/patie/OneDrive - University of Toronto./COURSES/FALL/2026/CHL5233 - Stats Programming/armed_conflict/Data/Raw/raw/raw/under5_mortality.csv", header = TRUE)
+matmort <- read.csv("./Data/Raw/raw/raw/maternal_mortality.csv", header = TRUE)
+infantmort <- read.csv("./Data/Raw/raw/raw/infant_mortality.csv", header = TRUE)
+neonmort <- read.csv("./Data/Raw/raw/raw/neonatal_mortality.csv", header = TRUE)
+under5mort <- read.csv("./Data/Raw/raw/raw/under5_mortality.csv", header = TRUE)
 
 
 # Change wide to long format
@@ -40,7 +40,7 @@ under5mort_lg <- convert_long(under5mort, "under5_mortality")
 
 ## PREPARE DISASTER DATA
 # Read disaster dataset
-disaster <- read.csv("C:/Users/patie/OneDrive - University of Toronto./COURSES/FALL/2026/CHL5233 - Stats Programming/armed_conflict/Data/Raw/raw/raw/disaster.csv", header = TRUE)
+disaster <- read.csv("./Data/Raw/raw/raw/disaster.csv", header = TRUE)
 
 # Clean column names in dataset
 disaster <- clean_names(disaster)
@@ -67,7 +67,7 @@ nestdisaster <- nestdisaster |> group_by(iso, year) |>
 
 ## PREPARE CONFLICT DATA
 # Read disaster dataset
-conflict_dt <- read.csv("C:/Users/patie/OneDrive - University of Toronto./COURSES/FALL/2026/CHL5233 - Stats Programming/armed_conflict/Data/Raw/raw/raw/conflict.csv", header = TRUE)
+conflict_dt <- read.csv("./Data/Raw/raw/raw/conflict.csv", header = TRUE)
 
 # Binary conflict variable
 # 0=No conflict, <25 conflict related deaths; 1=Yes conflict, >=25 deaths
@@ -89,6 +89,5 @@ mortality_dt <- list(conflict_dt, nestdisaster, infantmort_lg, matmort_lg,
   reduce(left_join, by = c("iso", "year")) |>
   mutate(year=as.integer(year))
 
-
-
+write.csv(mortality_dt, "./Report/mortality_data.csv", row.names = FALSE)
 
