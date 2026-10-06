@@ -93,5 +93,13 @@ write.csv(mortality_dt, "./Data/Processed/mortality_data.csv", row.names = FALSE
 
 
 ## COMPARING DATA WITH CODING AGENT
-# 
+# My year variable range from 1999-2018, instead of 2000-2019, which introduces extra NAs in the data,
+# correct version with codex where year was recoded to 2000-2019.
+# for drought, earthquake and conflict variables, codex replaced NA entries with 0=no conflict/earthquake/drought.
+# this could be good when a decision have been made on how to handle missing data, otherwise,
+# I think it is better to leave as NA, because it doesn't necessarily mean there was no colfict for e.g.
+# could be that there was no data for the particular country-year.
+# My code for merging data sets is more compact (iterative) reducing repetitive lines of code (efficient).
+# Codex code merged the data sets one after the other which can get messy with more data sets,
+# though could bee easier to understand for someone reading the code.
 
