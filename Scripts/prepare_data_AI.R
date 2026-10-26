@@ -20,10 +20,10 @@ prepare_mortality <- function(data, mortality_name) {
 }
 
 # Read the four World Bank mortality data sets.
-matmort <- read.csv("./Data/Raw/raw/raw/maternal_mortality.csv")
-infantmort <- read.csv("./Data/Raw/raw/raw/infant_mortality.csv")
-neonmort <- read.csv("./Data/Raw/raw/raw/neonatal_mortality.csv")
-under5mort <- read.csv("./Data/Raw/raw/raw/under5_mortality.csv")
+matmort <- read.csv("./Data/Raw/maternal_mortality.csv")
+infantmort <- read.csv("./Data/Raw/infant_mortality.csv")
+neonmort <- read.csv("./Data/Raw/neonatal_mortality.csv")
+under5mort <- read.csv("./Data/Raw/under5_mortality.csv")
 
 # Apply the same manipulation to each data set.
 matmort_lg <- prepare_mortality(matmort, "maternal_mortality")
@@ -35,7 +35,7 @@ under5mort_lg <- prepare_mortality(under5mort, "under5_mortality")
 ## PREPARE DISASTER DATA
 
 # Read the disaster data and clean its variable names.
-disaster <- read.csv("./Data/Raw/raw/raw/disaster.csv") |>
+disaster <- read.csv("./Data/Raw/disaster.csv") |>
   clean_names()
 
 # Keep the requested years, disaster types, and variables.
@@ -61,7 +61,7 @@ disaster_prepared <- disaster_subset |>
 ## PREPARE ARMED CONFLICT DATA
 
 # Read conflict records. The variable `best` is the best estimate of deaths.
-conflict_raw <- read.csv("./Data/Raw/raw/raw/conflict.csv")
+conflict_raw <- read.csv("./Data/Raw/conflict.csv")
 
 # Sum deaths where a country has multiple conflict records in the same year.
 # Complete missing country-years so that years without conflict records are zero.
@@ -85,6 +85,13 @@ conflict_prepared <- conflict_raw |>
   arrange(iso, year)
 
 
+## PREPARE COVARIATES DATA
+
+# Read the country-year covariates used in the final analysis data set.
+covariates <- read.csv("./Data/Raw/covariates.csv") |>
+  mutate(year = as.integer(year))
+
+
 ## MERGE AND SAVE THE FINAL DATA SET
 
 final_data <- conflict_prepared |>
@@ -93,6 +100,7 @@ final_data <- conflict_prepared |>
   left_join(infantmort_lg, by = c("year", "iso")) |>
   left_join(neonmort_lg, by = c("year", "iso")) |>
   left_join(under5mort_lg, by = c("year", "iso")) |>
+  left_join(covariates, by = c("year", "iso")) |>
   mutate(
     earthquake = replace_na(earthquake, 0L),
     drought = replace_na(drought, 0L)
@@ -103,6 +111,6 @@ final_data <- conflict_prepared |>
 dir.create("./Data/Processed", recursive = TRUE, showWarnings = FALSE)
 write.csv(
   final_data,
-  "./Data/Processed/armed_conflict_health_data.csv",
+  "./Data/Processed/armed_conflict_health_data_AI.csv",
   row.names = FALSE
 )

@@ -4,10 +4,13 @@ library(purrr)
 
 
 # Read all mortality datasets
-matmort <- read.csv("./Data/Raw/raw/raw/maternal_mortality.csv", header = TRUE)
-infantmort <- read.csv("./Data/Raw/raw/raw/infant_mortality.csv", header = TRUE)
-neonmort <- read.csv("./Data/Raw/raw/raw/neonatal_mortality.csv", header = TRUE)
-under5mort <- read.csv("./Data/Raw/raw/raw/under5_mortality.csv", header = TRUE)
+matmort <- read.csv("./Data/Raw/maternal_mortality.csv", header = TRUE)
+infantmort <- read.csv("./Data/Raw/infant_mortality.csv", header = TRUE)
+neonmort <- read.csv("./Data/Raw/neonatal_mortality.csv", header = TRUE)
+under5mort <- read.csv("./Data/Raw/under5_mortality.csv", header = TRUE)
+
+# Read other datasets
+covariates <- read.csv("./Data/Raw/covariates.csv", header = TRUE)
 
 
 # Change wide to long format
@@ -40,7 +43,7 @@ under5mort_lg <- convert_long(under5mort, "under5_mortality")
 
 ## PREPARE DISASTER DATA
 # Read disaster dataset
-disaster <- read.csv("./Data/Raw/raw/raw/disaster.csv", header = TRUE)
+disaster <- read.csv("./Data/Raw/disaster.csv", header = TRUE)
 
 # Clean column names in dataset
 disaster <- clean_names(disaster)
@@ -67,7 +70,7 @@ nestdisaster <- nestdisaster |> group_by(iso, year) |>
 
 ## PREPARE CONFLICT DATA
 # Read disaster dataset
-conflict_dt <- read.csv("./Data/Raw/raw/raw/conflict.csv", header = TRUE)
+conflict_dt <- read.csv("./Data/Raw/conflict.csv", header = TRUE)
 
 # Binary conflict variable
 # 0=No conflict, <25 conflict related deaths; 1=Yes conflict, >=25 deaths
@@ -77,19 +80,22 @@ conflict_dt <- conflict_dt |> group_by(iso, year) |>
     .groups = "drop"
   ) |>
   mutate(
-    conflict = as.integer(if_else(n_deaths>=25, 1, 0))
-)
+    armed_conflict = as.integer(if_else(n_deaths>=25, 1, 0)),
+    year = year + 1L
+) |> 
+  select(-n_deaths) |>
+  arrange(iso, year)
 
 
 ## MERGE ALL DATA
 # Datasets to merge; conflict_dt, nestdisaster, infantmort_lg, matmort_lg, 
-# neonmort_lg, under5mort_lg
-mortality_dt <- list(conflict_dt, nestdisaster, infantmort_lg, matmort_lg, 
-    neonmort_lg, under5mort_lg) |>
+# neonmort_lg, under5mort_lg, covariates
+final_data <- list(conflict_dt, nestdisaster, infantmort_lg, matmort_lg, 
+    neonmort_lg, under5mort_lg, covariates) |>
   reduce(left_join, by = c("iso", "year")) |>
   mutate(year=as.integer(year))
 
-write.csv(mortality_dt, "./Data/Processed/mortality_data.csv", row.names = FALSE)
+write.csv(final_data, "./Data/Processed/armed_conflict_final_data.csv", row.names = FALSE)
 
 
 ## COMPARING DATA WITH CODING AGENT
