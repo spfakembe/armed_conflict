@@ -55,7 +55,7 @@ subdisaster <- filter(disaster, year %in% c(2000:2019),
 # Further subset to few columns
 nestdisaster <- subdisaster |> select(iso, year, disaster_type)
 
-# Dummy variables for drought and earthquake
+# Create dummy variables for drought and earthquake
 nestdisaster <- nestdisaster |> group_by(iso, year) |>
   summarise(
     n1 = sum(disaster_type == "Drought", na.rm = TRUE),
@@ -70,7 +70,8 @@ nestdisaster <- nestdisaster |> group_by(iso, year) |>
 
 ## PREPARE CONFLICT DATA
 # Read disaster dataset
-conflict_dt <- read.csv("./Data/Raw/conflict.csv", header = TRUE)
+conflict_dt <- read.csv("./Data/Raw/conflict.csv", header = TRUE) |>
+  clean_names()
 
 # Binary conflict variable
 # 0=No conflict, <25 conflict related deaths; 1=Yes conflict, >=25 deaths
@@ -93,7 +94,10 @@ conflict_dt <- conflict_dt |> group_by(iso, year) |>
 final_data <- list(conflict_dt, nestdisaster, infantmort_lg, matmort_lg, 
     neonmort_lg, under5mort_lg, covariates) |>
   reduce(left_join, by = c("iso", "year")) |>
-  mutate(year=as.integer(year))
+  mutate(year=as.integer(year),
+drought = replace_na(drought, 0L),
+earthquake = replace_na(earthquake, 0L)
+)
 
 write.csv(final_data, "./Data/Processed/armed_conflict_final_data.csv", row.names = FALSE)
 
