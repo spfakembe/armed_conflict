@@ -1,0 +1,40 @@
+---
+title: "Exploratory data analysis using Final Armed Conflict Dataset"
+author: "Patience Fakembe"
+format:
+  html:
+    toc: true
+    embed-resources: true
+execute:
+  warning: false
+  message: false
+---
+
+## Purpose
+
+This report includes exploratory data analysis on the final armed conflict dataset.
+
+```{r}
+#| echo: false
+
+library(tidyverse)
+library(knitr)
+
+armed_conflict_data <- read_csv("../Data/Processed/armed_conflict_final_data.csv", show_col_types = FALSE)
+
+```
+
+## Understand the data content
+
+The armed conflict data contains XX variables with XXX observations.
+
+```{r}
+number_of_variables <- n_col(armed_conflict_data)
+number_of_observations <- n_row(armed_conflict_data)
+```
+
+View sections of the dataset
+
+```{r}
+
+```
