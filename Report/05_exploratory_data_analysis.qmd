@@ -12,29 +12,153 @@ execute:
 
 ## Purpose
 
-This report includes exploratory data analysis on the final armed conflict dataset.
+This report explores the structure, completeness, validity, and distributions of the final armed conflict dataset.
 
 ```{r}
+#| label: setup
 #| echo: false
 
 library(tidyverse)
 library(knitr)
 
-armed_conflict_data <- read_csv("../Data/Processed/armed_conflict_final_data.csv", show_col_types = FALSE)
+armed_conflict_data <- read_csv(
+  "../Data/Processed/armed_conflict_final_data.csv",
+  show_col_types = FALSE,
+  na = c("", "NA")
+)
 
+binary_variables <- c("armed_conflict", "earthquake", "drought", "oecd")
+continuous_variables <- c(
+  "infant_mortality", "maternal_mortality", "neonatal_mortality",
+  "under5_mortality", "gdp_1000", "pop_dens", "urban", "age_dep",
+  "male_edu", "temp", "rainfall_1000"
+)
 ```
 
-## Understand the data content
+## Structure of the data
 
-The armed conflict data contains XX variables with XXX observations.
+The dataset contains `r nrow(armed_conflict_data)` observations and `r ncol(armed_conflict_data)` variables, representing `r n_distinct(armed_conflict_data$iso)` countries over the years `r min(armed_conflict_data$year)`--`r max(armed_conflict_data$year)`.
 
 ```{r}
-number_of_variables <- n_col(armed_conflict_data)
-number_of_observations <- n_row(armed_conflict_data)
+#| label: variable-structure
+
+structure_table <- tibble(
+  variable = names(armed_conflict_data),
+  data_type = map_chr(armed_conflict_data, ~ paste(class(.x), collapse = ", "))
+)
+
+kable(structure_table, caption = "Variables, data types")
 ```
 
-View sections of the dataset
+The first and last six observations help confirm the ordering and content of the data.
 
 ```{r}
+#| label: head-tail
 
+head(armed_conflict_data)
+tail(armed_conflict_data)
 ```
+
+
+## Missing data
+
+```{r}
+#| label: missingness
+
+missing_summary <- armed_conflict_data |>
+  summarise(across(everything(), ~ sum(is.na(.x)))) |>
+  pivot_longer(everything(), names_to = "variable", values_to = "n_missing") |>
+  mutate(percent_missing = 100 * n_missing / nrow(armed_conflict_data)) |>
+  arrange(desc(n_missing))
+
+kable(
+  missing_summary,
+  digits = 1,
+  caption = "Missing values by variable"
+)
+```
+
+
+Missing observations are retained as `NA`. A complete-case dataset will be created later for a specific model, using the variables required by that model. There is high missingness in maternal mortality which will be further considered when interpreting results.
+
+## Summary statistics
+
+Year and binary indicators are excluded from continuous summaries because their means and standard deviations do not describe continuous distributions meaningfully.
+
+```{r}
+#| label: numerical-summary
+
+numerical_summary <- armed_conflict_data |>
+  summarise(across(
+    all_of(continuous_variables),
+    list(
+      n = ~ sum(!is.na(.x)),
+      mean = ~ mean(.x, na.rm = TRUE),
+      median = ~ median(.x, na.rm = TRUE),
+      sd = ~ sd(.x, na.rm = TRUE),
+      min = ~ min(.x, na.rm = TRUE),
+      max = ~ max(.x, na.rm = TRUE)
+    )
+  )) |>
+  pivot_longer(
+    everything(),
+    names_to = c("variable", ".value"),
+    names_pattern = "(.*)_(n|mean|median|sd|min|max)$"
+  ) |>
+  select(variable, n, mean, median, sd, min, max)
+
+kable(numerical_summary, digits = 2, caption = "Summary statistics for continuous variables")
+```
+
+Although stored numerically, the four indicator variables are categorical. Their frequency tables include both counts and percentages.
+
+```{r}
+#| label: categorical-summary
+
+categorical_summary <- armed_conflict_data |>
+  select(all_of(binary_variables)) |>
+  pivot_longer(everything(), names_to = "variable", values_to = "value") |>
+  count(variable, value, name = "frequency") |>
+  group_by(variable) |>
+  mutate(percent = 100 * frequency / sum(frequency)) |>
+  ungroup()
+
+kable(categorical_summary, digits = 1, caption = "Frequency tables for categorical variables")
+```
+
+## Distributions and potential outliers
+
+```{r}
+#| label: histograms
+#| fig-width: 10
+#| fig-height: 12
+#| fig-cap: "Histograms of continuous variables; scales differ across panels"
+
+armed_conflict_data |>
+  select(all_of(continuous_variables)) |>
+  pivot_longer(everything(), names_to = "variable", values_to = "value") |>
+  ggplot(aes(value)) +
+  geom_histogram(bins = 30, fill = "#3B82A0", colour = "white", na.rm = TRUE) +
+  facet_wrap(vars(variable), scales = "free", ncol = 3) +
+  labs(x = NULL, y = "Count") +
+  theme_minimal()
+```
+
+```{r}
+#| label: boxplots
+#| fig-width: 10
+#| fig-height: 12
+#| fig-cap: "Boxplots of continuous variables; points beyond the whiskers are candidates for investigation"
+
+armed_conflict_data |>
+  select(all_of(continuous_variables)) |>
+  pivot_longer(everything(), names_to = "variable", values_to = "value") |>
+  ggplot(aes(x = "", y = value)) +
+  geom_boxplot(fill = "#A7C7D3", outlier.alpha = 0.35, na.rm = TRUE) +
+  facet_wrap(vars(variable), scales = "free", ncol = 3) +
+  labs(x = NULL, y = NULL) +
+  theme_minimal() +
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())
+```
+
+
