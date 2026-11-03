@@ -65,7 +65,7 @@ table1_pdf <- as_gt(table1)
 
 gtsave(
   data = table1_pdf,
-  filename = "Table01_armed_conflict.pdf"
+  filename = "./Report/Table01_armed_conflict.pdf"
 )
 
 
@@ -128,7 +128,7 @@ matmort_plot
 
 # Save figure as PDF
 ggsave(
-  "Figure01_Maternal_Mortality_Trend.png",
+  filename = "./Report/Figure01_Maternal_Mortality_Trend.png",
   plot = matmort_plot,
   width = 10,
   height = 7
