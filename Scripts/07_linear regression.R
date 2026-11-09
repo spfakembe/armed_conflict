@@ -2,8 +2,8 @@
 # FITTING LINEAR REGRESSION MODELS
 #################################################
 
-install.packages("lm")
-install.packages("plm")
+#install.packages("lm")
+#install.packages("plm")
 
 
 library(dplyr)
@@ -13,7 +13,7 @@ library(tinytable)
 #library(gt)
 #library(ggplot2)
 #library(scales)
-library(lm)
+#library(lm)
 library(plm)
 library(broom)
 library(purrr)
@@ -126,8 +126,8 @@ table2 <- modelsummary(
   ),
   
   coef_map = c(
-      "armed_conflcit" = "Armed conflict-binary",
-      "log_gdp" = "GDP per capita (log transformed)",
+      "armed_conflict" = "Armed conflict-binary",
+      "log_gdp" = "GDP per capita (log)",
       "oecd" = "OECD member",
       "pop_dens" = "Population density",
       "urban" = "Urban population",
@@ -140,26 +140,29 @@ table2 <- modelsummary(
   ),
 
   gof_omit = "AIC|BIC|Log.Lik.|RMSE|F",
-  title = "Table 2. The association between armed conflict and various mortalities: adjusted beta coefficients(95% confidence internval)",
-  notes = "Beta coefficients with group-clustered 95% confidence intervals",
+  title = paste0("Table 2. The association between armed conflict and various mortalities: ",
+      "adjusted beta coefficients(95\\% confidence internval)"),
+    
+  notes = paste0("Beta coefficients with group-clustered ",
+  "95\\% confidence intervals"),
+  width = c(0.28, 0.18, 0.18, 0.18, 0.18),
   output = "tinytable"
+)
+
+### Save to PDF ###
+table2 <- tinytable::theme_latex(
+  table2,
+  outer = "label=none"
 )
 
 # View table
 table2
 
-### Save to PDF ###
 tinytable::save_tt(
   table2,
   output = "./Report/Table02_armed_conflict.pdf",
   overwrite = TRUE
 )
 
-#table1_pdf <- as_gt(table1)
-
-#gtsave(
-#  data = table1_pdf,
- # filename = "./Report/Table01_armed_conflict.pdf"
-#)
 
 

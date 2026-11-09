@@ -1,0 +1,61 @@
+
+\documentclass{standalone}
+\usepackage{tabularray}
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{float}
+\usepackage[normalem]{ulem}
+\usepackage[x11names, svgnames]{xcolor}
+\UseTblrLibrary{siunitx}
+\newcommand{\tinytableTabularrayUnderline}[1]{\underline{#1}}
+\newcommand{\tinytableTabularrayStrikeout}[1]{\sout{#1}}
+\NewTableCommand{\tinytableDefineColor}[3]{\definecolor{#1}{#2}{#3}}
+\begin{document}
+\minipage{\textwidth}
+\begin{table}
+\centering
+\begin{talltblr}[         %% tabularray outer open
+caption={Table 2. The association between armed conflict and various mortalities: adjusted beta coefficients(95% confidence internval)},
+note{}={Beta coefficients with group-clustered 95% confidence intervals},
+]                     %% tabularray outer close
+{                     %% tabularray inner open
+colspec={Q[]Q[]Q[]Q[]Q[]},
+hline{2}={1-5}{solid, black, 0.05em},
+hline{24}={1-5}{solid, black, 0.05em},
+hline{1}={1-5}{solid, black, 0.08em},
+hline{28}={1-5}{solid, black, 0.08em},
+column{2-5}={}{halign=c},
+column{1}={}{halign=l},
+}                     %% tabularray inner close
+& Maternal mortality ratio per 100,000 live births & Under5 mortality rate per 1,000 live births & Infant mortaslity rate per 1,000 live births & Neonatal mortality rate per 1,000 live births \\
+Armed conflict-binary & 34.471*** & 2.957*** & 1.646*** & 0.127 \\
+& [25.664, 43.278] & [1.555, 4.359] & [0.932, 2.361] & [-0.151, 0.405] \\
+GDP per capita (log transformed) & -27.488*** & -8.701*** & -6.135*** & -3.175*** \\
+& [-36.775, -18.201] & [-10.139, -7.263] & [-6.868, -5.402] & [-3.460, -2.890] \\
+OECD member & 28.063 & 6.617** & 3.217** & 1.219** \\
+& [-2.598, 58.724] & [2.151, 11.083] & [0.941, 5.494] & [0.333, 2.105] \\
+Population density & -0.416 & -0.344*** & -0.182*** & -0.054*** \\
+& [-1.161, 0.328] & [-0.458, -0.231] & [-0.240, -0.125] & [-0.076, -0.031] \\
+Urban population & -8.297*** & -1.736*** & -1.008*** & -0.386*** \\
+& [-10.235, -6.360] & [-2.029, -1.443] & [-1.157, -0.858] & [-0.444, -0.328] \\
+Age dependency ratio & -0.601 & -0.055 & 0.045 & 0.044*** \\
+& [-1.259, 0.058] & [-0.151, 0.040] & [-0.004, 0.093] & [0.025, 0.063] \\
+Male education & -60.627*** & -9.006*** & -4.817*** & -1.325*** \\
+& [-72.292, -48.963] & [-10.675, -7.336] & [-5.667, -3.966] & [-1.656, -0.994] \\
+Temperature & 10.516*** & 2.423*** & 1.153*** & 0.303** \\
+& [4.278, 16.754] & [1.414, 3.433] & [0.638, 1.667] & [0.103, 0.503] \\
+Rainfall & -4.580 & -0.038 & 0.018 & -0.131 \\
+& [-16.631, 7.471] & [-1.947, 1.871] & [-0.955, 0.991] & [-0.509, 0.248] \\
+Earthquake & 4.503 & 1.637* & 0.884* & 0.449** \\
+& [-4.674, 13.681] & [0.171, 3.103] & [0.137, 1.631] & [0.158, 0.740] \\
+Drought & -1.256 & 0.942 & 0.729* & 0.403** \\
+& [-9.445, 6.933] & [-0.335, 2.219] & [0.078, 1.380] & [0.149, 0.656] \\
+Num.Obs. & 3223 & 3618 & 3618 & 3618 \\
+R2 & 0.097 & 0.155 & 0.212 & 0.237 \\
+R2 Adj. & 0.035 & 0.102 & 0.163 & 0.190 \\
+Std.Errors & Maternal mortality ratio per 100,000 live births & Under5 mortality rate per 1,000 live births & Infant mortaslity rate per 1,000 live births & Neonatal mortality rate per 1,000 live births \\
+\end{talltblr}
+\end{table}
+\endminipage
+\end{document}
+
